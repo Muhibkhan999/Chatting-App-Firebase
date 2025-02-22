@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        #back {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        #back:hover {
+            background-color: #007bff;
+            color: white;
+        }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            text-align: center;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .profile-container {
+            background: white;
+            width: 380px;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
+        }
+        .profile-container:hover {
+            transform: translateY(-5px);
+        }
+        .profile-pic {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 3px solid #007bff;
+            box-shadow: 0 0 15px rgba(0, 123, 255, 0.3);
+            transition: transform 0.3s ease;
+        }
+        .profile-pic:hover {
+            transform: scale(1.05);
+        }
+        .profile-info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+        }
+        .update-btn {
+            margin-top: 20px;
+            padding: 12px 25px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0, 123, 255, 0.2);
+        }
+        .update-btn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+        }    </style>
+</head>
+<body>
+    <script src="allprofile.js" type="module"></script>
+<p><a href="../pages/dashboard.html" id="back">BACK</a></p>
+</body>
+</html>

@@ -1,0 +1,79 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friend Request and Chat</title>
+    <!-- Firebase CDN for Firebase App, Firestore, and Auth (as modules) -->
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js"></script>
+    <style>
+        /* Basic styles for the layout */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        #friendRequestSection {
+            margin-bottom: 20px;
+        }
+        #requestsList {
+            margin-top: 10px;
+        }
+        .requestMessage {
+            margin: 10px 0;
+        }
+        .chatWindow {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 300px;
+            height: 400px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 10px;
+            overflow-y: auto;
+            display: none; /* Initially hidden */
+        }
+        #chatMessages {
+            height: 300px;
+            overflow-y: scroll;
+        }
+        #chatInput {
+            width: 100%;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Friend Request Section -->
+    <div id="friendRequestSection">
+        <h2>Send Friend Request</h2>
+        <label for="friendId">Friend's ID: </label>
+        <input type="text" id="friendId" placeholder="Enter friend's ID">
+        <button id="sendRequestButton">Send Friend Request</button>
+    </div>
+
+    <!-- Friend Requests List Section -->
+    <div id="requestsList">
+        <h2>Friend Requests</h2>
+        <!-- Friend requests will be dynamically listed here -->
+    </div>
+
+    <!-- Private Chat Window (Initially Hidden) -->
+    <div id="chatWindow" class="chatWindow">
+        <h3>Chat</h3>
+        <div id="chatMessages"></div>
+        <input type="text" id="chatInput" placeholder="Type a message...">
+        <button id="sendChat">Send</button>
+    </div>
+
+    <!-- Firebase Initialization Script -->
+    <script type="module" src="requests.js"></script>
+
+</body>
+</html>

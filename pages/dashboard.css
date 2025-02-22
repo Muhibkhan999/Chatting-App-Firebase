@@ -1,0 +1,130 @@
+/* Margin utility with enhanced animation */
+.margin {
+    margin-top: 100px;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+body {
+    background:  
+        url('https://img.freepik.com/premium-vector/human-daily-activity-concept-vector-illustration_1317464-11132.jpg?ga=GA1.1.186462230.1738085834&semt=ais_hybrid') 
+        no-repeat left 50px bottom -40px,  
+        
+        url('https://img.freepik.com/free-vector/mobile-chat_24877-50848.jpg?ga=GA1.1.186462230.1738085834&semt=ais_hybrid') 
+        no-repeat right 20px top 190px; /* Moves second image upwards */
+    
+    background-size: 300px, 00px; /* First image = 300px, Second image = 450px (larger) */
+    background-attachment: fixed; /* Images stay in place */
+    background-color: #f3f4f6; /* Light background */
+    margin-left: 150px;
+}
+/* Enhanced Button styles with modern effects */
+.update-btn {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    padding: 10px 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.update-btn:hover {
+    background-color: #0056b3 !important;
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.delete-btn {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    padding: 10px 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.delete-btn:hover {
+    background-color: #a71d2a !important;
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Enhanced Navbar with glass morphism */
+nav {
+    backdrop-filter: blur(15px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.8);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Enhanced Container styles with depth */
+.max-w-4xl {
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.15);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 12px;
+    background: linear-gradient(145deg, #ffffff, #f5f5f5);
+}
+
+.max-w-4xl:hover {
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Enhanced Input field with modern interaction */
+input[type="text"] {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.9);
+}
+
+input[type="text"]:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.25);
+    transform: scale(1.01);
+}
+
+/* Enhanced Post sections with depth and gradient */
+#allPosts, #myPosts {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+#allPosts:hover, #myPosts:hover {
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    transform: translateY(-4px);
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+}
+
+/* Enhanced Sidebar with glass morphism */
+
+
+/* Enhanced Button animations */
+button {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+button:active {
+    transform: scale(0.95) translateY(2px);
+}
+
+button::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+}
+
+button:hover::after {
+    width: 200%;
+    height: 200%;
+}
