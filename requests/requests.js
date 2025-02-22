@@ -41,15 +41,17 @@ onAuthStateChanged(auth, async (user) => {
 
                 if (!friendData) {
                     console.warn(`Friend request from unknown user ID: ${friendId}`);
-                    continue; // Skip if user data is missing
+                    continue;
                 }
 
                 const friendName = friendData.displayName || "Unknown User";
                 const requestMessage = document.createElement("div");
-                requestMessage.innerHTML = `${friendName} sent you a friend request.`;
+                requestMessage.className = "request-item";
+                requestMessage.innerHTML = `<span class="friend-name">${friendName} sent you a friend request.</span>`;
 
                 // Accept Button
                 const acceptBtn = document.createElement("button");
+                acceptBtn.className = "accept-btn";
                 acceptBtn.innerText = "Accept";
                 acceptBtn.addEventListener("click", async () => {
                     await acceptFriendRequest(userId, friendId, friendName);
@@ -57,13 +59,17 @@ onAuthStateChanged(auth, async (user) => {
 
                 // Reject Button
                 const rejectBtn = document.createElement("button");
+                rejectBtn.className = "reject-btn";
                 rejectBtn.innerText = "Reject";
                 rejectBtn.addEventListener("click", async () => {
                     await rejectFriendRequest(userId, friendId);
                 });
 
-                requestMessage.appendChild(acceptBtn);
-                requestMessage.appendChild(rejectBtn);
+                const buttonContainer = document.createElement("div");
+                buttonContainer.className = "button-container";
+                buttonContainer.appendChild(acceptBtn);
+                buttonContainer.appendChild(rejectBtn);
+                requestMessage.appendChild(buttonContainer);
                 requestsList.appendChild(requestMessage);
             }
         } else {
@@ -79,7 +85,6 @@ async function acceptFriendRequest(userId, friendId, friendName) {
         const friendFriendsRef = doc(db, "friends", friendId);
         const userRequestsRef = doc(db, "friendRequests", userId);
 
-        // Ensure friends collection exists
         await updateDoc(userFriendsRef, { friends: arrayUnion(friendId) }).catch(async () => {
             await setDoc(userFriendsRef, { friends: [friendId] });
         });
@@ -87,13 +92,12 @@ async function acceptFriendRequest(userId, friendId, friendName) {
             await setDoc(friendFriendsRef, { friends: [userId] });
         });
 
-        // Remove friend request
         await updateDoc(userRequestsRef, { requests: arrayRemove(friendId) }).catch(async () => {
             await setDoc(userRequestsRef, { requests: [] });
         });
 
         console.log(`Friend request from ${friendId} accepted!`);
-        openPrivateChat(userId, friendId, friendName); // Open chat after accepting
+        openPrivateChat(userId, friendId, friendName);
     } catch (error) {
         console.error("Error accepting friend request:", error);
     }
@@ -105,15 +109,12 @@ async function rejectFriendRequest(userId, friendId) {
         const userRequestsRef = doc(db, "friendRequests", userId);
         const friendRequestsRef = doc(db, "friendRequests", friendId);
 
-        // Remove request from the user's pending list
         await updateDoc(userRequestsRef, { requests: arrayRemove(friendId) }).catch(async () => {
             await setDoc(userRequestsRef, { requests: [] });
         });
 
-        // Notify the sender that their request was rejected
         alert("Friend request rejected.");
 
-        // Optionally store a rejection notification for the sender
         await updateDoc(friendRequestsRef, { rejectedRequests: arrayUnion(userId) }).catch(async () => {
             await setDoc(friendRequestsRef, { rejectedRequests: [userId] });
         });
@@ -124,102 +125,115 @@ async function rejectFriendRequest(userId, friendId) {
     }
 }
 
-// // Open Private Chat
-// async function openPrivateChat(userId, friendId, friendName) {
-//     const chatId = userId < friendId ? `${userId}_${friendId}` : `${friendId}_${userId}`;
-//     const chatRef = doc(db, "privateChats", chatId);
-
-//     // Ensure chat collection exists
-//     const chatSnap = await getDoc(chatRef);
-//     if (!chatSnap.exists()) {
-//         await setDoc(chatRef, { messages: [] });
-//     }
-
-//     const chatWindow = document.createElement("div");
-//     chatWindow.style.position = "fixed";
-//     chatWindow.style.bottom = "0";
-//     chatWindow.style.left = "0";
-//     chatWindow.style.width = "300px";
-//     chatWindow.style.height = "400px";
-//     chatWindow.style.backgroundColor = "#fff";
-//     chatWindow.style.border = "1px solid #ccc";
-//     chatWindow.style.padding = "10px";
-//     chatWindow.style.overflowY = "auto";
-
-//     chatWindow.innerHTML = `
-//         <h3>Chat with ${friendName}</h3>
-//         <div id="chatMessages" style="height: 300px; overflow-y: scroll;"></div>
-//         <input type="text" id="chatInput" placeholder="Type a message..." style="width: 100%;">
-//         <button id="sendChat">Send</button>
-//     `;
-//     document.body.appendChild(chatWindow);
-
-//     loadChatMessages(chatId);
-
-//     document.getElementById("sendChat").addEventListener("click", async () => {
-//         const message = document.getElementById("chatInput").value;
-//         if (message) {
-//             await sendMessage(chatId, userId, message);
-//         }
-//     });
-// }
 async function openPrivateChat(userId, friendId, friendName) {
     const chatId = userId < friendId ? `${userId}_${friendId}` : `${friendId}_${userId}`;
     const chatRef = doc(db, "privateChats", chatId);
 
-    // Ensure chat collection exists
     const chatSnap = await getDoc(chatRef);
     if (!chatSnap.exists()) {
         await setDoc(chatRef, { messages: [] });
     }
 
     const chatWindow = document.createElement("div");
-    chatWindow.style.position = "fixed";
-    chatWindow.style.bottom = "0";
-    chatWindow.style.left = "0";
-    chatWindow.style.width = "300px";
-    chatWindow.style.height = "400px";
-    chatWindow.style.backgroundColor = "#fff";
-    chatWindow.style.border = "1px solid #ccc";
-    chatWindow.style.padding = "10px";
-    chatWindow.style.overflowY = "auto";
+    chatWindow.className = "chat-window";
+    chatWindow.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 320px;
+        height: 450px;
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    `;
 
     chatWindow.innerHTML = `
-        <h3>Chat with ${friendName}</h3>
-        <div id="chatMessages_${chatId}" style="height: 300px; overflow-y: scroll;"></div>
-        <input type="text" id="chatInput_${chatId}" placeholder="Type a message..." style="width: 100%;">
-        <button id="sendChat_${chatId}">Send</button>
+        <div class="chat-header" style="
+            padding: 15px;
+            background-color: #4a90e2;
+            color: white;
+            font-weight: bold;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        ">
+            <h3 style="margin: 0;">${friendName}</h3>
+            <button class="close-chat" style="
+                background: none;
+                border: none;
+                color: white;
+                cursor: pointer;
+                font-size: 20px;
+            ">×</button>
+        </div>
+        <div id="chatMessages_${chatId}" style="
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background-color: #f5f5f5;
+        "></div>
+        <div class="chat-input-container" style="
+            padding: 15px;
+            background-color: #ffffff;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+        ">
+            <input type="text" id="chatInput_${chatId}" style="
+                flex: 1;
+                padding: 10px;
+                border: 1px solid #e0e0e0;
+                border-radius: 20px;
+                outline: none;
+            " placeholder="Type a message...">
+            <button id="sendChat_${chatId}" style="
+                background-color: #4a90e2;
+                color: white;
+                border: none;
+                border-radius: 20px;
+                padding: 10px 20px;
+                cursor: pointer;
+                transition: background-color 0.2s;
+            ">Send</button>
+        </div>
     `;
 
     document.body.appendChild(chatWindow);
     loadChatMessages(chatId);
 
-    // Attach event listener after appending to DOM
+    // Close button functionality
+    chatWindow.querySelector('.close-chat').addEventListener('click', () => {
+        chatWindow.remove();
+    });
+
+    // Send button functionality
     document.getElementById(`sendChat_${chatId}`).addEventListener("click", async () => {
         const messageInput = document.getElementById(`chatInput_${chatId}`);
         const message = messageInput.value.trim();
         if (message) {
             await sendMessage(chatId, userId, message);
-            messageInput.value = ""; // Clear input after sending
+            messageInput.value = "";
+        }
+    });
+
+    // Enter key functionality
+    document.getElementById(`chatInput_${chatId}`).addEventListener("keypress", async (e) => {
+        if (e.key === "Enter") {
+            const messageInput = document.getElementById(`chatInput_${chatId}`);
+            const message = messageInput.value.trim();
+            if (message) {
+                await sendMessage(chatId, userId, message);
+                messageInput.value = "";
+            }
         }
     });
 }
 
-// // Send Message
-// async function sendMessage(chatId, senderId, message) {
-//     const chatRef = doc(db, "privateChats", chatId);
-
-//     await updateDoc(chatRef, {
-//         messages: arrayUnion({
-//             senderId: senderId,
-//             message: message,
-//             timestamp: new Date().toISOString(),
-//         }),
-//     });
-
-//     document.getElementById("chatInput").value = '';
-//     loadChatMessages(chatId);
-// }
 async function sendMessage(chatId, senderId, message) {
     const chatRef = doc(db, "privateChats", chatId);
 
@@ -231,40 +245,33 @@ async function sendMessage(chatId, senderId, message) {
         }),
     });
 
-    // Directly update the chat window instead of waiting for Firestore update
     const chatMessagesContainer = document.getElementById(`chatMessages_${chatId}`);
     if (chatMessagesContainer) {
-        chatMessagesContainer.innerHTML += `
-            <div style="text-align: right;">
-                <span style="font-weight: bold;">You:</span>
-                <p>${message}</p>
-            </div>
+        const messageElement = document.createElement('div');
+        messageElement.className = 'message sent';
+        messageElement.style.cssText = `
+            margin: 10px 0;
+            padding: 10px 15px;
+            background-color: #4a90e2;
+            color: white;
+            border-radius: 18px;
+            max-width: 70%;
+            word-wrap: break-word;
+            align-self: flex-end;
+            margin-left: auto;
         `;
+        messageElement.innerHTML = `
+            <div class="message-content">${message}</div>
+            <div class="message-time" style="
+                font-size: 0.8em;
+                opacity: 0.8;
+                margin-top: 4px;
+            ">${new Date().toLocaleTimeString()}</div>
+        `;
+        chatMessagesContainer.appendChild(messageElement);
         chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
     }
 }
-
-// Load Chat Messages
-// async function loadChatMessages(chatId) {
-//     const chatRef = doc(db, "privateChats", chatId);
-//     const chatSnap = await getDoc(chatRef);
-//     const chatData = chatSnap.data();
-
-//     const chatMessagesContainer = document.getElementById("chatMessages");
-//     if (chatData && chatData.messages) {
-//         chatMessagesContainer.innerHTML = chatData.messages
-//             .map(msg => `
-//                 <div style="text-align: ${msg.senderId === auth.currentUser.uid ? 'right' : 'left'};">
-//                     <span style="font-weight: bold;">${msg.senderId === auth.currentUser.uid ? 'You' : 'Friend'}:</span>
-//                     <p>${msg.message}</p>
-//                 </div>
-//             `)
-//             .join('');
-
-//         chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
-//     }
-// }
-
 
 async function loadChatMessages(chatId) {
     const chatRef = doc(db, "privateChats", chatId);
@@ -274,12 +281,29 @@ async function loadChatMessages(chatId) {
     const chatMessagesContainer = document.getElementById(`chatMessages_${chatId}`);
     if (chatMessagesContainer && chatData && chatData.messages) {
         chatMessagesContainer.innerHTML = chatData.messages
-            .map(msg => `
-                <div style="text-align: ${msg.senderId === auth.currentUser.uid ? 'right' : 'left'};">
-                    <span style="font-weight: bold;">${msg.senderId === auth.currentUser.uid ? 'You' : 'Friend'}:</span>
-                    <p>${msg.message}</p>
-                </div>
-            `)
+            .map(msg => {
+                const isCurrentUser = msg.senderId === auth.currentUser.uid;
+                const messageTime = new Date(msg.timestamp).toLocaleTimeString();
+                return `
+                    <div class="message ${isCurrentUser ? 'sent' : 'received'}" style="
+                        margin: 10px 0;
+                        padding: 10px 15px;
+                        background-color: ${isCurrentUser ? '#4a90e2' : '#e9ecef'};
+                        color: ${isCurrentUser ? 'white' : 'black'};
+                        border-radius: 18px;
+                        max-width: 70%;
+                        word-wrap: break-word;
+                        ${isCurrentUser ? 'margin-left: auto;' : 'margin-right: auto;'}
+                    ">
+                        <div class="message-content">${msg.message}</div>
+                        <div class="message-time" style="
+                            font-size: 0.8em;
+                            opacity: 0.8;
+                            margin-top: 4px;
+                        ">${messageTime}</div>
+                    </div>
+                `;
+            })
             .join('');
 
         chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;

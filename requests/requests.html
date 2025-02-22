@@ -1,79 +1,357 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Friend Request and Chat Application">
+        <meta name="theme-color" content="#ffffff">
+        <title>Friend Request and Chat</title>
+        <!-- Firebase CDN for Firebase App, Firestore, and Auth (as modules) -->
+        <script type="module" src="https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js"></script>
+        <script type="module" src="https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js"></script>
+        <script type="module" src="https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js"></script>
+        <style>
+            :root {
+                --primary-color: #4CAF50;
+                --secondary-color: #2196F3;
+                --accent-color: #FF4081;
+                --success-color: #45a049;
+                --background-color: #f5f5f5;
+                --text-color: #333;
+                --text-secondary: #666;
+                --border-radius: 8px;
+                --box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                --box-shadow-hover: 0 8px 16px rgba(0,0,0,0.15);
+                --hover-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                --spacing-unit: 1rem;
+                --container-max-width: 1400px;
+                --font-weight-normal: 400;
+                --font-weight-medium: 500;
+                --font-weight-bold: 600;
+            }
 
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+                text-rendering: optimizeLegibility;
+            }
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Friend Request and Chat</title>
-    <!-- Firebase CDN for Firebase App, Firestore, and Auth (as modules) -->
-    <script type="module" src="https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js"></script>
-    <script type="module" src="https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js"></script>
-    <script type="module" src="https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js"></script>
-    <style>
-        /* Basic styles for the layout */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-        }
-        #friendRequestSection {
-            margin-bottom: 20px;
-        }
-        #requestsList {
-            margin-top: 10px;
-        }
-        .requestMessage {
-            margin: 10px 0;
-        }
-        .chatWindow {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 300px;
-            height: 400px;
-            background-color: #fff;
-            border: 1px solid #ccc;
-            padding: 10px;
-            overflow-y: auto;
-            display: none; /* Initially hidden */
-        }
-        #chatMessages {
-            height: 300px;
-            overflow-y: scroll;
-        }
-        #chatInput {
-            width: 100%;
-            padding: 10px;
-        }
-    </style>
-</head>
-<body>
+            body {
+                font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                line-height: 1.6;
+                background-color: var(--background-color);
+                color: var(--text-color);
+                padding: calc(var(--spacing-unit) * 1.5);
+                max-width: var(--container-max-width);
+                margin: 0 auto;
+                min-height: 100vh;
+                overflow-x: hidden;
+            }
 
-    <!-- Friend Request Section -->
-    <div id="friendRequestSection">
-        <h2>Send Friend Request</h2>
-        <label for="friendId">Friend's ID: </label>
-        <input type="text" id="friendId" placeholder="Enter friend's ID">
-        <button id="sendRequestButton">Send Friend Request</button>
-    </div>
+            h2, h3 {
+                color: var(--primary-color);
+                margin-bottom: var(--spacing-unit);
+                font-weight: var(--font-weight-bold);
+                letter-spacing: 0.5px;
+                text-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            }
 
-    <!-- Friend Requests List Section -->
-    <div id="requestsList">
-        <h2>Friend Requests</h2>
-        <!-- Friend requests will be dynamically listed here -->
-    </div>
+            #friendRequestSection {
+                background-color: white;
+                padding: calc(var(--spacing-unit) * 1.5);
+                border-radius: var(--border-radius);
+                box-shadow: var(--box-shadow);
+                margin-bottom: calc(var(--spacing-unit) * 1.5);
+                transition: all var(--hover-transition);
+                border: 1px solid rgba(0,0,0,0.05);
+                backdrop-filter: blur(10px);
+            }
 
-    <!-- Private Chat Window (Initially Hidden) -->
-    <div id="chatWindow" class="chatWindow">
-        <h3>Chat</h3>
-        <div id="chatMessages"></div>
-        <input type="text" id="chatInput" placeholder="Type a message...">
-        <button id="sendChat">Send</button>
-    </div>
+            #friendRequestSection:hover {
+                transform: translateY(-3px);
+                box-shadow: var(--box-shadow-hover);
+            }
 
-    <!-- Firebase Initialization Script -->
-    <script type="module" src="requests.js"></script>
+            #requestsList {
+                background-color: white;
+                padding: calc(var(--spacing-unit) * 1.5);
+                border-radius: var(--border-radius);
+                box-shadow: var(--box-shadow);
+                transition: all var(--hover-transition);
+                border: 1px solid rgba(0,0,0,0.05);
+                backdrop-filter: blur(10px);
+            }
 
-</body>
-</html>
+            #requestsList:hover {
+                transform: translateY(-3px);
+                box-shadow: var(--box-shadow-hover);
+            }
+
+            input[type="text"] {
+                width: 100%;
+                padding: calc(var(--spacing-unit) * 0.75);
+                margin: calc(var(--spacing-unit) * 0.5) 0;
+                border: 2px solid rgba(0,0,0,0.1);
+                border-radius: var(--border-radius);
+                font-size: 1rem;
+                transition: all var(--hover-transition);
+                background-color: rgba(255, 255, 255, 0.95);
+                box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+            }
+
+            input[type="text"]:focus {
+                outline: none;
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+                transform: translateY(-1px);
+            }
+
+            button {
+                background-color: var(--primary-color);
+                color: white;
+                padding: calc(var(--spacing-unit) * 0.75) calc(var(--spacing-unit) * 1.5);
+                border: none;
+                border-radius: var(--border-radius);
+                cursor: pointer;
+                font-size: 1rem;
+                font-weight: var(--font-weight-medium);
+                transition: all var(--hover-transition);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                position: relative;
+                overflow: hidden;
+            }
+
+            button::after {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 5px;
+                height: 5px;
+                background: rgba(255,255,255,0.5);
+                opacity: 0;
+                border-radius: 100%;
+                transform: scale(1, 1) translate(-50%);
+                transform-origin: 50% 50%;
+            }
+
+            button:hover {
+                background-color: var(--success-color);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            }
+
+            button:active {
+                transform: translateY(0);
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+
+            button:focus {
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+            }
+
+            .requestMessage {
+                background-color: #fff;
+                padding: calc(var(--spacing-unit) * 1);
+                margin: calc(var(--spacing-unit) * 0.75) 0;
+                border-radius: var(--border-radius);
+                box-shadow: var(--box-shadow);
+                transition: all var(--hover-transition);
+                border: 1px solid rgba(0,0,0,0.05);
+                position: relative;
+            }
+
+            .requestMessage:hover {
+                transform: translateY(-2px) scale(1.01);
+                box-shadow: var(--box-shadow-hover);
+            }
+
+            .chatWindow {
+                position: fixed;
+                bottom: calc(var(--spacing-unit) * 1.5);
+                right: calc(var(--spacing-unit) * 1.5);
+                width: 380px;
+                height: 550px;
+                background-color: rgba(255, 255, 255, 0.98);
+                border-radius: var(--border-radius);
+                box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+                padding: calc(var(--spacing-unit) * 1.5);
+                display: none;
+                animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                backdrop-filter: blur(15px);
+                border: 1px solid rgba(0,0,0,0.1);
+            }
+
+            @keyframes slideUp {
+                from { transform: translateY(100%) scale(0.95); opacity: 0; }
+                to { transform: translateY(0) scale(1); opacity: 1; }
+            }
+
+            #chatMessages {
+                height: 380px;
+                overflow-y: auto;
+                padding: calc(var(--spacing-unit) * 0.75);
+                margin-bottom: calc(var(--spacing-unit) * 0.75);
+                border: 1px solid rgba(0,0,0,0.1);
+                border-radius: var(--border-radius);
+                scrollbar-width: thin;
+                scrollbar-color: var(--primary-color) #f1f1f1;
+                background: rgba(255,255,255,0.95);
+            }
+
+            #chatMessages::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            #chatMessages::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                border-radius: 3px;
+            }
+
+            #chatMessages::-webkit-scrollbar-thumb {
+                background: var(--primary-color);
+                border-radius: 3px;
+                transition: background-color var(--hover-transition);
+            }
+
+            #chatMessages::-webkit-scrollbar-thumb:hover {
+                background: var(--success-color);
+            }
+
+            #chatInput {
+                width: calc(100% - 80px);
+                margin-right: calc(var(--spacing-unit) * 0.75);
+            }
+
+            .message {
+                margin: calc(var(--spacing-unit) * 0.75) 0;
+                padding: calc(var(--spacing-unit) * 0.75);
+                border-radius: var(--border-radius);
+                max-width: 85%;
+                word-wrap: break-word;
+                position: relative;
+                transition: all var(--hover-transition);
+            }
+
+            .message.sent {
+                background-color: var(--primary-color);
+                color: white;
+                margin-left: auto;
+                box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+                border-bottom-right-radius: 2px;
+            }
+
+            .message.received {
+                background-color: #e9ecef;
+                margin-right: auto;
+                box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+                border-bottom-left-radius: 2px;
+            }
+
+            .message:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            }
+
+            @media (max-width: 768px) {
+                body {
+                    padding: calc(var(--spacing-unit) * 0.75);
+                }
+
+                .chatWindow {
+                    width: 100%;
+                    height: 100vh;
+                    bottom: 0;
+                    right: 0;
+                    border-radius: 0;
+                    padding: calc(var(--spacing-unit) * 0.75);
+                }
+
+                #chatMessages {
+                    height: calc(100vh - 180px);
+                }
+
+                button {
+                    width: 100%;
+                    margin-top: calc(var(--spacing-unit) * 0.75);
+                }
+
+                input[type="text"] {
+                    font-size: 16px; /* Prevent zoom on iOS */
+                }
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                * {
+                    animation-duration: 0.01ms !important;
+                    animation-iteration-count: 1 !important;
+                    transition-duration: 0.01ms !important;
+                    scroll-behavior: auto !important;
+                }
+            }
+
+            @media (prefers-color-scheme: dark) {
+                :root {
+                    --background-color: #1a1a1a;
+                    --text-color: #ffffff;
+                    --text-secondary: #cccccc;
+                }
+
+                body {
+                    background-color: var(--background-color);
+                }
+
+                input[type="text"] {
+                    background-color: rgba(255, 255, 255, 0.05);
+                    color: var(--text-color);
+                }
+
+                .chatWindow, #friendRequestSection, #requestsList {
+                    background-color: rgba(255, 255, 255, 0.1);
+                }
+
+                .message.received {
+                    background-color: #2d2d2d;
+                    color: var(--text-color);
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Friend Request Section -->
+        <div id="friendRequestSection">
+            <h2>Send Friend Request</h2>
+            <div class="input-group">
+                <label for="friendId">Friend's ID: </label>
+                <input type="text" id="friendId" placeholder="Enter friend's ID" autocomplete="off">
+                <button id="sendRequestButton" class="primary-button">Send Friend Request</button>
+            </div>
+        </div>
+
+        <!-- Friend Requests List Section -->
+        <div id="requestsList">
+            <h2>Friend Requests</h2>
+            <div id="requestsContainer">
+                <!-- Friend requests will be dynamically listed here -->
+            </div>
+        </div>
+
+        <!-- Private Chat Window (Initially Hidden) -->
+        <div id="chatWindow" class="chatWindow">
+            <h3>Chat</h3>
+            <div id="chatMessages"></div>
+            <div class="chat-input-container">
+                <input type="text" id="chatInput" placeholder="Type a message..." autocomplete="off">
+                <button id="sendChat">Send</button>
+            </div>
+        </div>
+
+        <!-- Firebase Initialization Script -->
+        <script type="module" src="requests.js"></script>
+    </body>
+    </html>
