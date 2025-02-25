@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Friend List</title>
     <link rel="stylesheet" href="friendlist.css">
 </head>
-<body data-theme="light">
+<body>
     <!-- Theme Toggle Button -->
-    <button id="themeToggle">🌓</button>
+    <button id="themeToggle">🌙</button>
 
     <header>
         <h1>Friend List</h1>
@@ -47,11 +47,38 @@
         const themeToggle = document.getElementById("themeToggle");
         const body = document.body;
 
+        // Load saved theme from localStorage
+        const savedTheme = localStorage.getItem("theme") || "light";
+        body.setAttribute("data-theme", savedTheme);
+        themeToggle.textContent = savedTheme === "dark" ? "🌞" : "🌙";
+
+        // Toggle theme
         themeToggle.addEventListener("click", () => {
             const isDark = body.getAttribute("data-theme") === "dark";
-            body.setAttribute("data-theme", isDark ? "light" : "dark");
-            themeToggle.textContent = isDark ? "🌞" : "🌙";
+            const newTheme = isDark ? "light" : "dark";
+            body.setAttribute("data-theme", newTheme);
+            themeToggle.textContent = isDark ? "🌙" : "🌞";
+            localStorage.setItem("theme", newTheme);
+
+            // Apply theme to dynamically created elements
+            applyThemeToDynamicElements(newTheme);
         });
+
+        // Function to apply theme to dynamically created elements
+        function applyThemeToDynamicElements(theme) {
+            const chatWindows = document.querySelectorAll("[id^='chatWindow_']");
+            const groupModals = document.querySelectorAll(".chatModal");
+
+            chatWindows.forEach(chatWindow => {
+                chatWindow.style.backgroundColor = theme === "dark" ? "#2D3436" : "#FFFFFF";
+                chatWindow.style.color = theme === "dark" ? "#FFFFFF" : "#2D3436";
+            });
+
+            groupModals.forEach(modal => {
+                modal.style.backgroundColor = theme === "dark" ? "#2D3436" : "#FFFFFF";
+                modal.style.color = theme === "dark" ? "#FFFFFF" : "#2D3436";
+            });
+        }
     </script>
 </body>
 </html>
