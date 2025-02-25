@@ -1,42 +1,3 @@
- <!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Friend List</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <header>
-        <h1>Friend List</h1>
-        <nav>
-            <ul>
-                <li><a href="dashboard.html">Home</a></li>
-                <li><a href="private.html">Private Chats</a></li>
-                <li><a href="friendrequests.html">Requests</a></li>
-                <li><a href="#" onclick="logout()">Logout</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <main>
-        <section id="friendList">
-            <h2>Your Friends</h2>
-            <ul id="friendsList">Loading...</ul>
-        </section>
-    </main>
-  
-    
-    <script src="friendlist.js" type="module"></script>
-</body>
-</html>  -->
-
-
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -44,39 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Friend List</title>
     <link rel="stylesheet" href="friendlist.css">
-    
 </head>
-<body>
+<body data-theme="light">
+    <!-- Theme Toggle Button -->
+    <button id="themeToggle">🌓</button>
+
     <header>
         <h1>Friend List</h1>
-        </nav>
     </header>
     <main>
+        <!-- Friend List Section -->
         <section id="friendList">
             <h2>Your Friends</h2>
             <button id="makeGroupBtn">Make Group</button>
             <ul id="friendsList">Loading...</ul>
         </section>
-    
-        <!-- Hidden Group Creation Section (Initially Hidden) -->
+
+        <!-- Hidden Group Creation Section -->
         <section id="createGroupSection" style="display: none;">
             <input type="text" id="groupNameInput" placeholder="Enter Group Name">
             <button id="createGroupBtn">Create Group</button>
         </section>
- <h2>Groups</h2>
-        <section id="groupList">
-            
-        </section>
+
+        <!-- Groups Section -->
+        <h2>Groups</h2>
+        <section id="groupList"></section>
     </main>
-    
+
     <!-- Group Modal -->
-    <div id="groupModal" style="display: none;">
+    <div id="groupModal" class="modal">
         <h2>Create a Group</h2>
         <input type="text" id="groupNameInput" placeholder="Enter group name">
         <button id="createGroupBtn">Create Group</button>
-        <button id="closeGroupModal">Close</button>
+        <button id="closeGroupModal" class="closeBtn">×</button>
     </div>
 
     <script src="friendlist.js" type="module"></script>
+
+    <!-- Theme Toggle Script -->
+    <script>
+        const themeToggle = document.getElementById("themeToggle");
+        const body = document.body;
+
+        themeToggle.addEventListener("click", () => {
+            const isDark = body.getAttribute("data-theme") === "dark";
+            body.setAttribute("data-theme", isDark ? "light" : "dark");
+            themeToggle.textContent = isDark ? "🌞" : "🌙";
+        });
+    </script>
 </body>
 </html>

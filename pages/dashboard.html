@@ -9,6 +9,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="dashboard.css">
 
+    <!-- Particle.js -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const sidebar = document.getElementById("sidebar");
@@ -16,7 +22,7 @@
             const closeSidebar = document.getElementById("closeSidebar");
             const logo = document.getElementById("logo");
 
-            // ✅ Sidebar Toggle
+            // Sidebar Toggle
             dropdown.addEventListener("click", function (event) {
                 event.stopPropagation();
                 sidebar.classList.remove("translate-x-full", "opacity-0", "scale-95");
@@ -37,97 +43,133 @@
                 event.stopPropagation();
             });
 
-            // ✅ Logo Animation on Click
+            // Logo Animation on Click
             logo.addEventListener("click", function () {
                 logo.classList.add("rotate-and-scale");
                 setTimeout(() => {
                     logo.classList.remove("rotate-and-scale");
-                }, 600); // Reset animation
+                }, 600);
+            });
+
+            // Dark Mode Toggle
+            const themeToggle = document.getElementById("themeToggle");
+            themeToggle.addEventListener("click", function () {
+                document.body.classList.toggle("dark-mode");
+            });
+
+            // Initialize Particle.js
+            particlesJS("particles-js", {
+                particles: {
+                    number: { value: 80, density: { enable: true, value_area: 800 } },
+                    color: { value: "#ffffff" },
+                    shape: { type: "circle" },
+                    opacity: { value: 0.5, random: true },
+                    size: { value: 3, random: true },
+                    line_linked: { enable: true, distance: 150, color: "#ffffff", opacity: 0.4, width: 1 },
+                    move: { enable: true, speed: 3, direction: "none", random: true, straight: false, out_mode: "out" }
+                },
+                interactivity: {
+                    detect_on: "canvas",
+                    events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" } }
+                },
+                retina_detect: true
             });
         });
     </script>
 
     <style>
-        /* ✅ Logo Rotation and Scaling */
+        /* Logo Rotation and Scaling */
         .rotate-and-scale {
             transform: rotate(360deg) scale(1.2);
             transition: transform 0.6s ease-in-out;
         }
+
+        /* Floating Animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        #logo {
+            animation: float 3s ease-in-out infinite;
+        }
     </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gradient-to-r from-blue-600 to-blue-800">
 
-<!-- ✅ Navbar -->
-<nav class="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-4 shadow-lg">
+<!-- Particle.js Background -->
+<div id="particles-js"></div>
+
+<!-- Navbar -->
+<nav class="bg-white/10 backdrop-blur-md py-4 shadow-lg fixed w-full z-40">
     <div class="max-w-6xl mx-auto flex justify-between items-center px-4">
         <div class="flex items-center space-x-6">
-            <!-- Animated Logo -->
-            <img id="logo" src="logo.png" alt="Connect Hub Logo" class="h-12 cursor-pointer hover:opacity-80 transition-all duration-300">
-
-            <!-- ✅ Added Navbar Items -->
-            <a href="#" class="hover:text-blue-200 transition-colors duration-300 font-medium text-lg px-3 py-2 rounded-lg hover:bg-blue-700">Home</a>
-            <a href="#" class="hover:text-blue-200 transition-colors duration-300 font-medium text-lg px-3 py-2 rounded-lg hover:bg-blue-700">Explore</a>
-            <a href="#" class="hover:text-blue-200 transition-colors duration-300 font-medium text-lg px-3 py-2 rounded-lg hover:bg-blue-700">Notifications</a>
+            <img id="logo" src="logo.png" alt="Logo" class="h-12 cursor-pointer hover:opacity-80 transition-all duration-300">
+            <a href="#" class="text-white hover:text-blue-200 transition-colors duration-300 font-medium text-lg px-3 py-2 rounded-lg hover:bg-blue-700">Home</a>
+            <a href="#" class="text-white hover:text-blue-200 transition-colors duration-300 font-medium text-lg px-3 py-2 rounded-lg hover:bg-blue-700">Explore</a>
+            <a href="#" class="text-white hover:text-blue-200 transition-colors duration-300 font-medium text-lg px-3 py-2 rounded-lg hover:bg-blue-700">Notifications</a>
         </div>
-
-        <button id="signOut" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-md text-white">Logout</button>
-        <img id="dropdown" src="https://cdn-icons-png.flaticon.com/128/15827/15827733.png" alt="drop down img" class="cursor-pointer h-8 w-8">
+        <div class="flex items-center space-x-4">
+            <button id="themeToggle" class="bg-gray-800 text-white px-4 py-2 rounded-md">Toggle Dark Mode</button>
+            <button id="signOut" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-md text-white">Logout</button>
+            <img id="dropdown" src="https://cdn-icons-png.flaticon.com/128/15827/15827733.png" alt="Menu" class="cursor-pointer h-8 w-8">
+        </div>
     </div>
 </nav>
 
-<!-- ✅ Main Container -->
+<!-- Main Container -->
 <div class="margin">
-    <div class="max-w-4xl mx-auto mt-8 p-6 bg-white shadow-lg rounded-lg">
-        <h1 class="text-3xl font-bold text-center text-gray-800">WELCOME!</h1>
+    <div class="max-w-4xl mx-auto mt-24 p-6 bg-white/10 backdrop-blur-md shadow-lg rounded-lg">
+        <h1 class="text-3xl font-bold text-center text-white">WELCOME!</h1>
 
         <div class="mt-6 flex space-x-2">
-            <input type="text" id="post-inp" class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500" placeholder="Write a post..." required>
+            <input type="text" id="post-inp" class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 bg-white/20 text-white placeholder-white/70" placeholder="Write a post..." required>
             <button id="add" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">Post</button>
         </div>
 
-        <h3 class="mt-8 text-xl font-semibold text-gray-700">ALL POSTS</h3>
-        <div id="allPosts" class="mt-4 space-y-4 bg-gray-50 p-4 rounded-lg shadow-md overflow-y-auto max-h-96"></div>
+        <h3 class="mt-8 text-xl font-semibold text-white">ALL POSTS</h3>
+        <div id="allPosts" class="mt-4 space-y-4 bg-white/10 p-4 rounded-lg shadow-md overflow-y-auto max-h-96"></div>
 
-        <h3 class="mt-8 text-xl font-semibold text-gray-700">MY POSTS</h3>
-        <div id="myPosts" class="mt-4 space-y-4 bg-gray-50 p-4 rounded-lg shadow-md overflow-y-auto max-h-96">
-            <p class="text-gray-500">No posts yet.</p>
+        <h3 class="mt-8 text-xl font-semibold text-white">MY POSTS</h3>
+        <div id="myPosts" class="mt-4 space-y-4 bg-white/10 p-4 rounded-lg shadow-md overflow-y-auto max-h-96">
+            <p class="text-white/70">No posts yet.</p>
         </div>
     </div>
 </div>
 
-<!-- ✅ Sidebar with New Logo -->
-<div id="sidebar" class="fixed top-0 right-0 w-72 h-full bg-white shadow-2xl transition-all duration-500 ease-in-out transform translate-x-full opacity-0 scale-95 p-6 rounded-l-lg z-50">
+<!-- Sidebar -->
+<div id="sidebar" class="fixed top-0 right-0 w-72 h-full bg-white/10 backdrop-blur-md shadow-2xl transition-all duration-500 ease-in-out transform translate-x-full opacity-0 scale-95 p-6 rounded-l-lg z-50">
     <div class="flex items-center justify-between mb-6">
         <div class="flex items-center space-x-3">
             <img src="https://img.icons8.com/clouds/100/000000/user.png" class="h-12 w-12">
-            <h2 class="text-2xl font-bold text-gray-800">User Menu</h2>
+            <h2 class="text-2xl font-bold text-white">User Menu</h2>
         </div>
-        <button id="closeSidebar" class="text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
+        <button id="closeSidebar" class="text-white hover:text-gray-300 text-2xl">&times;</button>
     </div>
 
     <ul class="space-y-4">
-        <li><a href="../allprofile/allprofile.html" class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-blue-100 transition">
-            <img src="https://img.icons8.com/ios-glyphs/30/000000/user.png" class="h-6 w-6">
-            <span>All Profile</span></a></li>
-        <li><a href="../friends/friendlist.html" class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-blue-100 transition">
-            <img src="https://img.icons8.com/ios-glyphs/30/000000/friends.png" class="h-6 w-6">
-            <span>Friend List</span></a></li>
-        <li><a href="../requests/requests.html" class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-blue-100 transition">
-            <img src="https://img.icons8.com/ios-glyphs/30/000000/appointment-reminders.png" class="h-6 w-6">
-            <span>Requests</span></a></li>
-        <li><a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-blue-100 transition">
-            <img src="https://img.icons8.com/ios-glyphs/30/000000/settings.png" class="h-6 w-6">
-            <span>Settings</span></a></li>
-        <li><a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-blue-100 transition">
-            <img src="https://img.icons8.com/ios-glyphs/30/000000/help.png" class="h-6 w-6">
-            <span>Help</span></a></li>
-        <li><button id="logoutBtn" class="w-full text-left flex items-center space-x-3 px-4 py-3 text-red-500 hover:bg-red-100 rounded-lg transition">
+        <li><a href="../allprofile/allprofile.html" class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-blue-100/10 transition">
+            <img src="https://img.icons8.com/ios-glyphs/30/ffffff/user.png" class="h-6 w-6">
+            <span class="text-white">All Profile</span></a></li>
+        <li><a href="../friends/friendlist.html" class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-blue-100/10 transition">
+            <img src="https://img.icons8.com/ios-glyphs/30/ffffff/friends.png" class="h-6 w-6">
+            <span class="text-white">Friend List</span></a></li>
+        <li><a href="../requests/requests.html" class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-blue-100/10 transition">
+            <img src="https://img.icons8.com/ios-glyphs/30/ffffff/appointment-reminders.png" class="h-6 w-6">
+            <span class="text-white">Requests</span></a></li>
+        <li><a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-blue-100/10 transition">
+            <img src="https://img.icons8.com/ios-glyphs/30/ffffff/settings.png" class="h-6 w-6">
+            <span class="text-white">Settings</span></a></li>
+        <li><a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-blue-100/10 transition">
+            <img src="https://img.icons8.com/ios-glyphs/30/ffffff/help.png" class="h-6 w-6">
+            <span class="text-white">Help</span></a></li>
+        <li><button id="logoutBtn" class="w-full text-left flex items-center space-x-3 px-4 py-3 text-red-500 hover:bg-red-100/10 rounded-lg transition">
             <img src="https://img.icons8.com/ios-glyphs/30/ff0000/logout-rounded.png" class="h-6 w-6">
-            <span>Logout</span></button></li>
+            <span class="text-white">Logout</span></button></li>
     </ul>
 </div>
 
-<!-- ✅ External Scripts -->
+<!-- External Scripts -->
 <script type="module" src="../posts.js"></script>
 <script type="module" src="dropdown.js"></script>
 

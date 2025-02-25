@@ -34,118 +34,154 @@
           profileContainer.style.justifyContent = "center";
           profileContainer.style.gap = "20px";
           profileContainer.style.padding = "20px";
-          profileContainer.style.background = "linear-gradient(to right, #f0f2f5, #e6e9ef)";
+          profileContainer.style.transition = "all 0.3s ease";
           document.body.appendChild(profileContainer);
 
-          // Function to create profile cards
+          const style = document.createElement("style");
+          style.innerHTML = `
+              body {
+                  font-family: 'Segoe UI', Arial, sans-serif;
+                  background: linear-gradient(to right, #f8f9fa, #e6e9ef);
+                  transition: all 0.3s ease;
+                  text-align: center;
+              }
+
+              .profile-card {
+                  width: 320px;
+                  padding: 20px;
+                  border-radius: 15px;
+                  background: rgba(255, 255, 255, 0.1);
+                  backdrop-filter: blur(10px);
+                  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+                  text-align: center;
+                  transition: all 0.3s ease;
+              }
+
+              .profile-card:hover {
+                  transform: translateY(-5px);
+                  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+              }
+
+              .profile-pic {
+                  width: 100px;
+                  height: 100px;
+                  border-radius: 50%;
+                  border: 3px solid #6C5CE7;
+                  box-shadow: 0 0 10px rgba(108, 92, 231, 0.3);
+                  margin-bottom: 15px;
+                  object-fit: cover;
+              }
+
+              .profile-name {
+                  color: #2c3e50;
+                  font-size: 1.5rem;
+              }
+
+              .profile-info {
+                  color: #34495e;
+                  font-size: 1rem;
+                  margin: 5px 0;
+              }
+
+              .update-btn, .friend-request-btn {
+                  padding: 10px 20px;
+                  border-radius: 25px;
+                  background-color: #6C5CE7;
+                  color: white;
+                  font-weight: bold;
+                  border: none;
+                  cursor: pointer;
+                  transition: all 0.3s ease;
+                  margin: 5px;
+              }
+
+              .update-btn:hover, .friend-request-btn:hover {
+                  background-color: #00B894;
+                  transform: scale(1.05);
+              }
+
+              .dark-mode {
+                  background: linear-gradient(to right, #2D3436, #34495E);
+                  color: white;
+              }
+
+              .dark-mode .profile-card {
+                  background: rgba(255, 255, 255, 0.15);
+                  backdrop-filter: blur(12px);
+                  color: white;
+              }
+
+              .dark-mode .profile-pic {
+                  border-color: #FF7675;
+                  box-shadow: 0 0 10px rgba(255, 118, 117, 0.3);
+              }
+
+              .dark-mode .profile-name,
+              .dark-mode .profile-info {
+                  color: #FFFFFF;
+              }
+
+              .dark-mode .update-btn,
+              .dark-mode .friend-request-btn {
+                  background-color: #FF7675;
+              }
+
+              .dark-mode .update-btn:hover,
+              .dark-mode .friend-request-btn:hover {
+                  background-color: #6C5CE7;
+              }
+
+              #themeToggle {
+                  position: fixed;
+                  top: 20px;
+                  right: 20px;
+                  background: #6C5CE7;
+                  color: white;
+                  padding: 10px;
+                  border: none;
+                  border-radius: 50%;
+                  cursor: pointer;
+                  font-size: 1.25rem;
+                  transition: all 0.3s ease;
+                  z-index: 1000;
+              }
+
+              #themeToggle:hover {
+                  background: #00B894;
+                  transform: scale(1.1);
+              }
+          `;
+          document.head.appendChild(style);
+
+          const themeToggle = document.createElement("button");
+          themeToggle.innerText = "🌙";
+          themeToggle.id = "themeToggle";
+          document.body.appendChild(themeToggle);
+
+          themeToggle.addEventListener("click", () => {
+              document.body.classList.toggle("dark-mode");
+              themeToggle.innerText = document.body.classList.contains("dark-mode") ? "🌞" : "🌙";
+          });
+
           const createProfileCard = (userData, userId, currentUser) => {
-              if (currentUser.uid === userId) return; // Don't show the current user's profile
+              if (currentUser.uid === userId) return;
 
               const card = document.createElement("div");
-              card.style.textAlign = "center";
-              card.style.border = "none";
-              card.style.padding = "25px";
-              card.style.width = "280px";
-              card.style.margin = "10px";
-              card.style.borderRadius = "15px";
-              card.style.backgroundColor = "#ffffff";
-              card.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.1)";
-              card.style.transition = "transform 0.3s ease, box-shadow 0.3s ease";
-              card.style.cursor = "pointer";
+              card.classList.add("profile-card");
+              card.innerHTML = `
+                  <img src="${userData.profileImage || "https://static.vecteezy.com/system/resources/thumbnails/035/857/409/small/people-face-avatar-icon-cartoon-character-png.png"}" class="profile-pic">
+                  <h3 class="profile-name">${userData.displayName || "No Name"}</h3>
+                  <p class="profile-info">📅 Age: ${userData.age || "Not Provided"}</p>
+                  <p class="profile-info">📍 City: ${userData.city || "Not Provided"}</p>
+                  <p class="profile-info">🎓 Education: ${userData.education || "Not Provided"}</p>
+                  <p class="profile-info">📧 Email: ${userData.email || "Not Provided"}</p>
+                  <p class="profile-info">💬 About Me: ${userData.aboutMe || "Not Provided"}</p>
+                  <button class="update-btn">Update Profile</button>
+                  <button class="friend-request-btn">Send Friend Request</button>
+              `;
 
-              card.addEventListener('mouseenter', () => {
-                  card.style.transform = "translateY(-5px)";
-                  card.style.boxShadow = "0 6px 12px rgba(0, 0, 0, 0.15)";
-              });
-
-              card.addEventListener('mouseleave', () => {
-                  card.style.transform = "translateY(0)";
-                  card.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.1)";
-              });
-
-              const profilePic = document.createElement("img");
-              profilePic.src = userData.profileImage || "https://static.vecteezy.com/system/resources/thumbnails/035/857/409/small/people-face-avatar-icon-cartoon-character-png.png";
-              profilePic.style.width = "100px";
-              profilePic.style.height = "100px";
-              profilePic.style.borderRadius = "50%";
-              profilePic.style.border = "3px solid #007bff";
-              profilePic.style.padding = "3px";
-              profilePic.style.marginBottom = "15px";
-              profilePic.style.objectFit = "cover";
-
-              const userName = document.createElement("h3");
-              userName.innerText = `Name: ${userData.displayName}`;
-              userName.style.color = "#2c3e50";
-              userName.style.marginBottom = "15px";
-              userName.style.fontSize = "1.2em";
-
-              const userAge = document.createElement("p");
-              userAge.innerText = `Age: ${userData.age}`;
-              userAge.style.color = "#34495e";
-              userAge.style.margin = "8px 0";
-
-              const userEmail = document.createElement("p");
-              userEmail.innerText = `Email: ${userData.email}`;
-              userEmail.style.color = "#34495e";
-              userEmail.style.margin = "8px 0";
-
-              const userCity = document.createElement("p");
-              userCity.innerText = `City: ${userData.city || "Not Provided"}`;
-              userCity.style.color = "#34495e";
-              userCity.style.margin = "8px 0";
-
-              const userAbout = document.createElement("p");
-              userAbout.innerText = `About Me: ${userData.aboutMe || "Not Provided"}`;
-              userAbout.style.color = "#34495e";
-              userAbout.style.margin = "8px 0";
-
-              const userEducation = document.createElement("p");
-              userEducation.innerText = `Education: ${userData.education || "Not Provided"}`;
-              userEducation.style.color = "#34495e";
-              userEducation.style.margin = "8px 0";
-
-              const updateBtn = document.createElement("button");
-              updateBtn.innerText = "Update Profile";
-              updateBtn.style.marginTop = "15px";
-              updateBtn.style.padding = "10px 20px";
-              updateBtn.style.backgroundColor = "#007bff";
-              updateBtn.style.color = "#fff";
-              updateBtn.style.border = "none";
-              updateBtn.style.cursor = "pointer";
-              updateBtn.style.borderRadius = "25px";
-              updateBtn.style.fontWeight = "bold";
-              updateBtn.style.transition = "background-color 0.3s ease";
-
-              updateBtn.addEventListener('mouseenter', () => {
-                  updateBtn.style.backgroundColor = "#0056b3";
-              });
-
-              updateBtn.addEventListener('mouseleave', () => {
-                  updateBtn.style.backgroundColor = "#007bff";
-              });
-
-              const friendRequestBtn = document.createElement("button");
-              friendRequestBtn.innerText = "Send Friend Request";
-              friendRequestBtn.style.marginTop = "10px";
-              friendRequestBtn.style.padding = "10px 20px";
-              friendRequestBtn.style.backgroundColor = "#28a745";
-              friendRequestBtn.style.color = "#fff";
-              friendRequestBtn.style.border = "none";
-              friendRequestBtn.style.cursor = "pointer";
-              friendRequestBtn.style.borderRadius = "25px";
-              friendRequestBtn.style.fontWeight = "bold";
-              friendRequestBtn.style.transition = "background-color 0.3s ease";
-
-              friendRequestBtn.addEventListener('mouseenter', () => {
-                  friendRequestBtn.style.backgroundColor = "#218838";
-              });
-
-              friendRequestBtn.addEventListener('mouseleave', () => {
-                  friendRequestBtn.style.backgroundColor = "#28a745";
-              });
-
-              card.append(profilePic, userName, userAge, userEmail, userCity, userAbout, userEducation, updateBtn, friendRequestBtn);
-              profileContainer.appendChild(card);
+              const updateBtn = card.querySelector(".update-btn");
+              const friendRequestBtn = card.querySelector(".friend-request-btn");
 
               updateBtn.addEventListener("click", async () => {
                   const city = prompt("Enter your city:", userData.city || "");
@@ -154,11 +190,11 @@
                   const profileImage = prompt("Enter profile image URL:", userData.profileImage || "");
 
                   await setDoc(doc(db, "students", userId), { city, aboutMe, education, profileImage }, { merge: true });
-
-                  userCity.innerText = `City: ${city || "Not Provided"}`;
-                  userAbout.innerText = `About Me: ${aboutMe || "Not Provided"}`;
-                  userEducation.innerText = `Education: ${education || "Not Provided"}`;
-                  profilePic.src = profileImage || "https://static.vecteezy.com/system/resources/thumbnails/035/857/409/small/people-face-avatar-icon-cartoon-character-png.png";
+                  
+                  card.querySelector(".profile-info:nth-child(3)").innerText = `📍 City: ${city || "Not Provided"}`;
+                  card.querySelector(".profile-info:nth-child(6)").innerText = `💬 About Me: ${aboutMe || "Not Provided"}`;
+                  card.querySelector(".profile-info:nth-child(4)").innerText = `🎓 Education: ${education || "Not Provided"}`;
+                  card.querySelector(".profile-pic").src = profileImage || "https://static.vecteezy.com/system/resources/thumbnails/035/857/409/small/people-face-avatar-icon-cartoon-character-png.png";
 
                   alert("Profile updated successfully!");
               });
@@ -176,6 +212,8 @@
                       alert("Friend request already sent.");
                   }
               });
+
+              profileContainer.appendChild(card);
 
               const checkFriendRequests = async () => {
                   const requestRef = doc(db, "friendRequests", currentUser.uid);

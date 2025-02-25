@@ -23,3 +23,13 @@ document.getElementById("open-private-chat").addEventListener("click", () => {
         alert("No active chats. Start a chat from your Friend List.");
     }
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+            localStorage.removeItem("userUID");
+            window.location.replace("../index.html");
+        });
+    }
+});

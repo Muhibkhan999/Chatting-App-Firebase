@@ -10,16 +10,26 @@
 
 /* 🎨 Root Variables - Optimized for Ultra Styling */
 :root {
-    --primary-color: #007bff;
-    --secondary-color: #0056b3;
-    --background-color: #f4f6f9;
-    --text-color: #333;
+    --primary-color: #6C5CE7; /* Purple */
+    --secondary-color: #00B894; /* Teal */
+    --accent-color: #FF7675; /* Coral */
+    --background-color: #f4f6f9; /* Light Gray */
+    --text-color: #333; /* Dark Gray */
     --border-radius: 12px;
     --box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --error-color: #dc3545;
-    --success-color: #28a745;
-    --warning-color: #ffc107;
+    --error-color: #dc3545; /* Red */
+    --success-color: #28a745; /* Green */
+    --warning-color: #ffc107; /* Yellow */
+}
+
+/* Dark Mode Variables */
+[data-theme="dark"] {
+    --primary-color: #6C5CE7; /* Purple */
+    --secondary-color: #00B894; /* Teal */
+    --accent-color: #FF7675; /* Coral */
+    --background-color: #2D3436; /* Dark Gray */
+    --text-color: #FFFFFF; /* White */
 }
 
 /* 🌅 Body Styling - Full Power */
@@ -32,13 +42,15 @@ body {
     padding: 20px;
     line-height: 1.6;
     overflow-x: hidden;
+    transition: background-color 0.5s ease, color 0.5s ease;
 }
 
 /* 📦 Ultra-Stylish Container */
 .container {
     width: 100%;
     max-width: 420px;
-    background: white;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
     padding: 30px;
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
@@ -46,6 +58,7 @@ body {
     transition: var(--transition);
     position: relative;
     transform: translateY(0);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .container:hover {
@@ -67,18 +80,19 @@ input {
     width: 100%;
     padding: 14px;
     margin: 10px 0;
-    border: 2px solid #ddd;
+    border: 2px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius);
     font-size: 16px;
     transition: var(--transition);
-    background: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
 }
 
 input:focus {
     border-color: var(--primary-color);
     outline: none;
-    box-shadow: 0 0 8px rgba(0, 123, 255, 0.4);
-    background: white;
+    box-shadow: 0 0 8px rgba(108, 92, 231, 0.4);
+    background: rgba(255, 255, 255, 0.2);
 }
 
 /* 🎨 Buttons - Next Level Interaction */
@@ -141,15 +155,6 @@ input:focus {
     background: #c1351e;
 }
 
-/* 🚪 Logout Button - Dynamic */
-.logout-btn {
-    background: var(--error-color);
-}
-
-.logout-btn:hover {
-    background: #a71d2a;
-}
-
 /* 📜 Link Styles - Animation Magic */
 p {
     margin-top: 14px;
@@ -189,7 +194,7 @@ a:hover::after {
 
 /* 🎬 Input Placeholder Animation */
 input::placeholder {
-    color: #999;
+    color: var(--text-secondary);
     opacity: 1;
     transition: var(--transition);
 }
@@ -197,14 +202,6 @@ input::placeholder {
 input:focus::placeholder {
     opacity: 0.5;
     transform: translateY(-3px);
-}
-
-/* 🔥 Floating Label Effect */
-input:focus + label,
-input:not(:placeholder-shown) + label {
-    transform: translateY(-24px);
-    font-size: 14px;
-    color: var(--primary-color);
 }
 
 /* 📱 Responsive Design - Flawless Adaptability */
@@ -244,4 +241,26 @@ input:not(:placeholder-shown) + label {
 
 .container:hover {
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Theme Toggle Button */
+#themeToggle {
+    position: fixed;
+    top: calc(var(--spacing-unit) * 1.5);
+    right: calc(var(--spacing-unit) * 1.5);
+    background: var(--primary-color);
+    color: white;
+    padding: calc(var(--spacing-unit) * 1.5);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 2rem;
+    transition: var(--transition);
+    z-index: 1000;
+    margin-left: 790px;
+}
+
+#themeToggle:hover {
+    background: var(--secondary-color);
+    transform: scale(1.3);
 }
