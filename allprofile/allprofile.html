@@ -44,6 +44,8 @@
             padding: 20px;
             min-height: 100vh;
             transition: background-color 0.5s ease, color 0.5s ease;
+            position: relative; /* Required for absolute positioning of the back button */
+            padding-bottom: 80px; /* Add padding to prevent overlap */
         }
 
         /* 🔙 Back Button - Stylish & Functional */
@@ -51,21 +53,25 @@
             text-decoration: none;
             color: var(--primary-color);
             font-weight: bold;
-            padding: 10px 20px;
+            padding: 12px 24px;
             border-radius: 25px;
             transition: var(--transition);
-            position: absolute;
-            top: 20px;
-            left: 20px;
+            position: fixed; /* Fixed positioning to keep it at the bottom */
+            bottom: 20px; /* Position at the bottom */
+            left: 50%; /* Center horizontally */
+            transform: translateX(-50%); /* Center horizontally */
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: var(--box-shadow);
+            z-index: 1000; /* Ensure the button is on top */
         }
 
         #back:hover {
             background-color: var(--primary-color);
             color: white;
-            box-shadow: 0 3px 10px rgba(108, 92, 231, 0.3);
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
+            transform: translateX(-50%) translateY(-2px); /* Adjust hover effect */
         }
 
         /* 📦 Profile Container - Glassmorphism Effect */
@@ -159,7 +165,7 @@
     <!-- Back Button -->
     <p><a href="../pages/dashboard.html" id="back">BACK</a></p>
 
-
+ 
 
     <!-- Theme Toggle Script -->
     <script>
