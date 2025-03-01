@@ -7,6 +7,32 @@
     <link rel="stylesheet" href="style.css">
     <script type="module" src="script.js"></script>
     <script type="module" src="posts.js"></script>
+    <style>
+        /* Inline CSS for background and basic body styling */
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background: #f0f0f0; /* Default light mode background */
+            transition: background 0.3s ease; /* Smooth transition for theme change */
+        }
+
+        body[data-theme="dark"] {
+            background: #1a1a1a; /* Dark mode background */
+        }
+
+        /* Style for the theme toggle button */
+        #themeToggle {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 10px;
+            font-size: 20px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body data-theme="light">
     <!-- Theme Toggle Button -->
@@ -32,7 +58,7 @@
         themeToggle.addEventListener("click", () => {
             const isDark = body.getAttribute("data-theme") === "dark";
             body.setAttribute("data-theme", isDark ? "light" : "dark");
-            themeToggle.textContent = isDark ? "🌞" : "🌙";
+            themeToggle.textContent = isDark ? "🌞" : "🌙"; // Sun for light, Moon for dark
         });
     </script>
 </body>

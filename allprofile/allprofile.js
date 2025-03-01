@@ -16,12 +16,13 @@
           } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 
           const firebaseConfig = {
-              apiKey: "AIzaSyDyyKEfco7HvaLuvWC3RYkMnyER2SjBdX4",
-              authDomain: "students-data-d86ad.firebaseapp.com",
-              projectId: "students-data-d86ad",
-              storageBucket: "students-data-d86ad.firebasestorage.app",
-              messagingSenderId: "202639565303",
-              appId: "1:202639565303:web:a37ac7b15f3a960d4fcef2",
+            apiKey: "AIzaSyCbcT2Dbv_gGvejEraqEmTRpjWfP_INZo0",
+            authDomain: "first-project-ed208.firebaseapp.com",
+            projectId: "first-project-ed208",
+            storageBucket: "first-project-ed208.firebasestorage.app",
+            messagingSenderId: "724413631751",
+            appId: "1:724413631751:web:4bac7ed9cd9c80212a89a2",
+            measurementId: "G-6HJ83XTGP7"
           };
 
           const app = initializeApp(firebaseConfig);

@@ -16,10 +16,10 @@
             --secondary-color: #00B894; /* Teal */
             --accent-color: #FF7675; /* Coral */
             --success-color: #55EFC4; /* Light Teal */
-            --background-color: #FFFFFF; /* White */
+            --background-color: #F0F2F5; /* Light Gray */
             --text-color: #2D3436; /* Dark Gray */
             --text-secondary: #636E72; /* Gray */
-            --border-radius: 12px;
+            --border-radius: 16px;
             --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             --box-shadow-hover: 0 8px 16px rgba(0, 0, 0, 0.2);
             --hover-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -36,7 +36,7 @@
             --secondary-color: #00B894; /* Teal */
             --accent-color: #FF7675; /* Coral */
             --success-color: #55EFC4; /* Light Teal */
-            --background-color: #2D3436; /* Dark Gray */
+            --background-color: #1E1E2F; /* Dark Blue */
             --text-color: #FFFFFF; /* White */
             --text-secondary: #B2BEC3; /* Light Gray */
         }
@@ -72,8 +72,8 @@
         }
 
         #friendRequestSection, #requestsList {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            backdrop-filter: blur(15px);
             padding: calc(var(--spacing-unit) * 1.5);
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
@@ -108,7 +108,7 @@
         }
 
         button {
-            background-color: var(--primary-color);
+            background: linear-gradient(145deg, var(--primary-color), var(--secondary-color));
             color: white;
             padding: calc(var(--spacing-unit) * 0.75) calc(var(--spacing-unit) * 1.5);
             border: none;
@@ -142,13 +142,12 @@
         }
 
         button:hover {
-            background-color: var(--secondary-color);
             transform: translateY(-2px);
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
         }
 
         .requestMessage {
-            background: rgba(255, 255, 255, 0.1);
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
             padding: calc(var(--spacing-unit) * 1);
             margin: calc(var(--spacing-unit) * 0.75) 0;
             border-radius: var(--border-radius);
@@ -168,7 +167,7 @@
             right: calc(var(--spacing-unit) * 1.5);
             width: 380px;
             height: 550px;
-            background: rgba(255, 255, 255, 0.1);
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
             backdrop-filter: blur(15px);
             border-radius: var(--border-radius);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
@@ -224,14 +223,14 @@
         }
 
         .message.sent {
-            background-color: var(--primary-color);
+            background: linear-gradient(145deg, var(--primary-color), var(--secondary-color));
             color: white;
             margin-left: auto;
             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
         }
 
         .message.received {
-            background-color: rgba(255, 255, 255, 0.1);
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
             margin-right: auto;
             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
         }
@@ -246,7 +245,7 @@
             position: fixed;
             top: calc(var(--spacing-unit) * 1.5);
             right: calc(var(--spacing-unit) * 1.5);
-            background: var(--primary-color);
+            background: linear-gradient(145deg, var(--primary-color), var(--secondary-color));
             color: white;
             padding: calc(var(--spacing-unit) * 0.75);
             border: none;
@@ -258,8 +257,8 @@
         }
 
         #themeToggle:hover {
-            background: var(--secondary-color);
             transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
         }
 
         @media (max-width: 768px) {

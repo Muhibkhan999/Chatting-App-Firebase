@@ -4,12 +4,13 @@ import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/
 
 // Firebase Configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyDyyKEfco7HvaLuvWC3RYkMnyER2SjBdX4",
-    authDomain: "students-data-d86ad.firebaseapp.com",
-    projectId: "students-data-d86ad",
-    storageBucket: "students-data-d86ad.appspot.com",
-    messagingSenderId: "202639565303",
-    appId: "1:202639565303:web:a37ac7b15f3a960d4fcef2"
+    apiKey: "AIzaSyCbcT2Dbv_gGvejEraqEmTRpjWfP_INZo0",
+    authDomain: "first-project-ed208.firebaseapp.com",
+    projectId: "first-project-ed208",
+    storageBucket: "first-project-ed208.firebasestorage.app",
+    messagingSenderId: "724413631751",
+    appId: "1:724413631751:web:4bac7ed9cd9c80212a89a2",
+    measurementId: "G-6HJ83XTGP7"
 };
 
 // Initialize Firebase
@@ -17,68 +18,74 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
+// Track open chat windows
+const openChatWindows = new Set();
+
 // Get the logged-in user
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         const userId = user.uid;
-        const requestsRef = doc(db, "friendRequests", userId);
-        const requestsSnap = await getDoc(requestsRef);
-
-        if (requestsSnap.exists()) {
-            const requestsData = requestsSnap.data();
-            const requests = requestsData.requests || [];
-
-            console.log("Friend Requests Snapshot:", requests.length);
-
-            // Display requests with Accept/Reject buttons
-            const requestsList = document.getElementById("requestsList");
-            requestsList.innerHTML = "";
-
-            for (const friendId of requests) {
-                const friendRef = doc(db, "students", friendId);
-                const friendSnap = await getDoc(friendRef);
-                const friendData = friendSnap.data();
-
-                if (!friendData) {
-                    console.warn(`Friend request from unknown user ID: ${friendId}`);
-                    continue;
-                }
-
-                const friendName = friendData.displayName || "Unknown User";
-                const requestMessage = document.createElement("div");
-                requestMessage.className = "request-item";
-                requestMessage.innerHTML = `<span class="friend-name">${friendName} sent you a friend request.</span>`;
-
-                // Accept Button
-                const acceptBtn = document.createElement("button");
-                acceptBtn.className = "accept-btn";
-                acceptBtn.innerText = "Accept";
-                acceptBtn.addEventListener("click", async () => {
-                    await acceptFriendRequest(userId, friendId, friendName);
-                });
-
-                // Reject Button
-                const rejectBtn = document.createElement("button");
-                rejectBtn.className = "reject-btn";
-                rejectBtn.innerText = "Reject";
-                rejectBtn.addEventListener("click", async () => {
-                    await rejectFriendRequest(userId, friendId);
-                });
-
-                const buttonContainer = document.createElement("div");
-                buttonContainer.className = "button-container";
-                buttonContainer.appendChild(acceptBtn);
-                buttonContainer.appendChild(rejectBtn);
-                requestMessage.appendChild(buttonContainer);
-                requestsList.appendChild(requestMessage);
-            }
-        } else {
-            console.log("No friend requests found.");
-        }
+        await loadFriendRequests(userId);
     }
 });
 
-// Accept Friend Request
+// Load friend requests
+async function loadFriendRequests(userId) {
+    const requestsRef = doc(db, "friendRequests", userId);
+    const requestsSnap = await getDoc(requestsRef);
+
+    if (requestsSnap.exists()) {
+        const requestsData = requestsSnap.data();
+        const requests = requestsData.requests || [];
+        displayFriendRequests(userId, requests);
+    } else {
+        console.log("No friend requests found.");
+    }
+}
+
+// Display friend requests
+async function displayFriendRequests(userId, requests) {
+    const requestsList = document.getElementById("requestsList");
+    requestsList.innerHTML = "";
+
+    for (const friendId of requests) {
+        const friendData = await getUserData(friendId);
+        if (!friendData) continue;
+
+        const friendName = friendData.displayName || "Unknown User";
+        const requestMessage = document.createElement("div");
+        requestMessage.className = "request-item";
+        requestMessage.innerHTML = `<span class="friend-name">${friendName} sent you a friend request.</span>`;
+
+        const acceptBtn = createButton("Accept", "accept-btn", () => acceptFriendRequest(userId, friendId, friendName));
+        const rejectBtn = createButton("Reject", "reject-btn", () => rejectFriendRequest(userId, friendId));
+
+        const buttonContainer = document.createElement("div");
+        buttonContainer.className = "button-container";
+        buttonContainer.appendChild(acceptBtn);
+        buttonContainer.appendChild(rejectBtn);
+        requestMessage.appendChild(buttonContainer);
+        requestsList.appendChild(requestMessage);
+    }
+}
+
+// Create a button
+function createButton(text, className, onClick) {
+    const button = document.createElement("button");
+    button.className = className;
+    button.innerText = text;
+    button.addEventListener("click", onClick);
+    return button;
+}
+
+// Get user data
+async function getUserData(userId) {
+    const userRef = doc(db, "students", userId);
+    const userSnap = await getDoc(userRef);
+    return userSnap.exists() ? userSnap.data() : null;
+}
+
+// Accept friend request
 async function acceptFriendRequest(userId, friendId, friendName) {
     try {
         const userFriendsRef = doc(db, "friends", userId);
@@ -103,7 +110,7 @@ async function acceptFriendRequest(userId, friendId, friendName) {
     }
 }
 
-// Reject Friend Request
+// Reject friend request
 async function rejectFriendRequest(userId, friendId) {
     try {
         const userRequestsRef = doc(db, "friendRequests", userId);
@@ -113,19 +120,24 @@ async function rejectFriendRequest(userId, friendId) {
             await setDoc(userRequestsRef, { requests: [] });
         });
 
-        alert("Friend request rejected.");
-
         await updateDoc(friendRequestsRef, { rejectedRequests: arrayUnion(userId) }).catch(async () => {
             await setDoc(friendRequestsRef, { rejectedRequests: [userId] });
         });
 
+        alert("Friend request rejected.");
         console.log(`Friend request from ${friendId} rejected.`);
     } catch (error) {
         console.error("Error rejecting friend request:", error);
     }
 }
 
+// Open private chat
 async function openPrivateChat(userId, friendId, friendName) {
+    if (openChatWindows.has(friendId)) {
+        alert(`Chat with ${friendName} is already open.`);
+        return;
+    }
+
     const chatId = userId < friendId ? `${userId}_${friendId}` : `${friendId}_${userId}`;
     const chatRef = doc(db, "privateChats", chatId);
 
@@ -134,6 +146,33 @@ async function openPrivateChat(userId, friendId, friendName) {
         await setDoc(chatRef, { messages: [] });
     }
 
+    const chatWindow = createChatWindow(friendName, chatId);
+    document.body.appendChild(chatWindow);
+    openChatWindows.add(friendId);
+
+    loadChatMessages(chatId);
+
+    // Close button functionality
+    chatWindow.querySelector('.close-chat').addEventListener('click', () => {
+        chatWindow.remove();
+        openChatWindows.delete(friendId);
+    });
+
+    // Send button functionality
+    document.getElementById(`sendChat_${chatId}`).addEventListener("click", async () => {
+        await sendMessage(chatId, userId);
+    });
+
+    // Enter key functionality
+    document.getElementById(`chatInput_${chatId}`).addEventListener("keypress", async (e) => {
+        if (e.key === "Enter") {
+            await sendMessage(chatId, userId);
+        }
+    });
+}
+
+// Create chat window
+function createChatWindow(friendName, chatId) {
     const chatWindow = document.createElement("div");
     chatWindow.className = "chat-window";
     chatWindow.style.cssText = `
@@ -148,6 +187,7 @@ async function openPrivateChat(userId, friendId, friendName) {
         display: flex;
         flex-direction: column;
         overflow: hidden;
+        animation: slideIn 0.3s ease;
     `;
 
     chatWindow.innerHTML = `
@@ -203,76 +243,30 @@ async function openPrivateChat(userId, friendId, friendName) {
         </div>
     `;
 
-    document.body.appendChild(chatWindow);
-    loadChatMessages(chatId);
-
-    // Close button functionality
-    chatWindow.querySelector('.close-chat').addEventListener('click', () => {
-        chatWindow.remove();
-    });
-
-    // Send button functionality
-    document.getElementById(`sendChat_${chatId}`).addEventListener("click", async () => {
-        const messageInput = document.getElementById(`chatInput_${chatId}`);
-        const message = messageInput.value.trim();
-        if (message) {
-            await sendMessage(chatId, userId, message);
-            messageInput.value = "";
-        }
-    });
-
-    // Enter key functionality
-    document.getElementById(`chatInput_${chatId}`).addEventListener("keypress", async (e) => {
-        if (e.key === "Enter") {
-            const messageInput = document.getElementById(`chatInput_${chatId}`);
-            const message = messageInput.value.trim();
-            if (message) {
-                await sendMessage(chatId, userId, message);
-                messageInput.value = "";
-            }
-        }
-    });
+    return chatWindow;
 }
 
-async function sendMessage(chatId, senderId, message) {
+// Send message
+async function sendMessage(chatId, userId) {
+    const messageInput = document.getElementById(`chatInput_${chatId}`);
+    const message = messageInput.value.trim();
+    if (!message) return;
+
     const chatRef = doc(db, "privateChats", chatId);
 
     await updateDoc(chatRef, {
         messages: arrayUnion({
-            senderId: senderId,
+            senderId: userId,
             message: message,
             timestamp: new Date().toISOString(),
         }),
     });
 
-    const chatMessagesContainer = document.getElementById(`chatMessages_${chatId}`);
-    if (chatMessagesContainer) {
-        const messageElement = document.createElement('div');
-        messageElement.className = 'message sent';
-        messageElement.style.cssText = `
-            margin: 10px 0;
-            padding: 10px 15px;
-            background-color: #4a90e2;
-            color: white;
-            border-radius: 18px;
-            max-width: 70%;
-            word-wrap: break-word;
-            align-self: flex-end;
-            margin-left: auto;
-        `;
-        messageElement.innerHTML = `
-            <div class="message-content">${message}</div>
-            <div class="message-time" style="
-                font-size: 0.8em;
-                opacity: 0.8;
-                margin-top: 4px;
-            ">${new Date().toLocaleTimeString()}</div>
-        `;
-        chatMessagesContainer.appendChild(messageElement);
-        chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
-    }
+    messageInput.value = "";
+    loadChatMessages(chatId);
 }
 
+// Load chat messages
 async function loadChatMessages(chatId) {
     const chatRef = doc(db, "privateChats", chatId);
     const chatSnap = await getDoc(chatRef);
